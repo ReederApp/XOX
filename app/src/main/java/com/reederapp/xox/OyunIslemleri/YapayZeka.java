@@ -1,7 +1,6 @@
 package com.reederapp.xox.OyunIslemleri;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Button;
 
 import com.reederapp.xox.enums.OyunKey;
@@ -12,7 +11,7 @@ public class YapayZeka {
     private final Button[][] buttons;
     private final Context mContext;
 
-    public boolean bulunduMu = false;
+    public static boolean xoxBulunduMu = false;
 
     public YapayZeka(Button[][] buttons, Context mContext) {
         this.buttons = buttons;
@@ -78,7 +77,7 @@ public class YapayZeka {
                     }
                 }
                 //yukarı çaprazda bulma
-                if ((i - 2 >= 0) && (j + 2 < matris.length)) {
+                if ((i - 2 >= 0) && (j + 2 < matris.length) && (!eklendiMi)) {
                     if ((matris[i][j] != OyunKey.BOS.getDeger()) && (matris[i][j] == matris[i - 1][j + 1]) && (matris[i - 2][j + 2] == OyunKey.BOS.getDeger())) {
                         matris[i - 2][j + 2] = oyunSirasi;
                         buttons[i - 2][j + 2].setText(getOyunSirasiText(oyunSirasi));
@@ -100,6 +99,66 @@ public class YapayZeka {
     }
 
     private void atakYap(int[][] matris, int oyunSirasi) {
+        boolean atakYapildiMi = false;
+        for (int i = 0; i < matris.length; i++) {
+            for (int j = 0; j < matris.length; j++) {
+                if (!atakYapildiMi && (j + 2 < matris.length)) {
+                    if ((matris[i][j] == oyunSirasi) && (matris[i][j + 1] == OyunKey.BOS.getDeger()) && (matris[i][j + 1] == matris[i][j + 2])) {
+                        matris[i][j + 1] = oyunSirasi;
+                        buttons[i][j + 1].setText(getOyunSirasiText(oyunSirasi));
+                        atakYapildiMi = true;
+                    }
+                }
+                if (!atakYapildiMi && (i + 2 < matris.length)) {
+                    if ((matris[i][j] == oyunSirasi) && (matris[i + 1][j] == OyunKey.BOS.getDeger()) && (matris[i + 1][j] == matris[i + 2][j])) {
+                        matris[i + 1][j] = oyunSirasi;
+                        buttons[i + 1][j].setText(getOyunSirasiText(oyunSirasi));
+                        atakYapildiMi = true;
+                    }
+                }
+                if (!atakYapildiMi && (i + 2) < matris.length && ((j + 2) < matris.length)) {
+                    if ((matris[i][j] == oyunSirasi) && (matris[i + 1][j + 1] == OyunKey.BOS.getDeger()) && (matris[i + 1][j + 1] == matris[i + 2][j + 2])) {
+                        matris[i + 1][j + 1] = oyunSirasi;
+                        buttons[i + 1][j + 1].setText(getOyunSirasiText(oyunSirasi));
+                        atakYapildiMi = true;
+                    }
+                }
+                if (!atakYapildiMi && (i - 2 >= 0) && (j + 2 < matris.length)) {
+                    if ((matris[i][j] == oyunSirasi) && (matris[i - 1][j + 1] == OyunKey.BOS.getDeger()) && (matris[i - 1][j + 1] == matris[i - 2][j + 2])) {
+                        matris[i - 1][j + 1] = oyunSirasi;
+                        buttons[i - 1][j + 1].setText(getOyunSirasiText(oyunSirasi));
+                        atakYapildiMi = true;
+                    }
+
+                }
+            }
+        }
+        if (!atakYapildiMi) {
+            if (matris[0][matris.length - 1] == OyunKey.BOS.getDeger()) {
+                matris[0][matris.length - 1] = oyunSirasi;
+                buttons[0][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
+            } else if (matris[matris.length - 1][0] == OyunKey.BOS.getDeger()) {
+                matris[matris.length - 1][0] = oyunSirasi;
+                buttons[matris.length - 1][0].setText(getOyunSirasiText(oyunSirasi));
+            } else if (matris[matris.length - 1][matris.length - 1] == OyunKey.BOS.getDeger()) {
+                matris[matris.length - 1][matris.length - 1] = oyunSirasi;
+                buttons[matris.length - 1][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
+            } else if (matris[0][0] == OyunKey.BOS.getDeger()) {
+                matris[0][0] = oyunSirasi;
+                buttons[0][0].setText(getOyunSirasiText(oyunSirasi));
+            } else {
+                for (int i = 0; i < matris.length; i++) {
+                    for (int j = 0; j < matris.length; j++) {
+                        if ((!atakYapildiMi) && (matris[i][j] == OyunKey.BOS.getDeger())) {
+                            matris[i][j] = oyunSirasi;
+                            buttons[i][j].setText(getOyunSirasiText(oyunSirasi));
+                            atakYapildiMi = true;
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     private String getOyunSirasiText(int oyunSirasi) {
@@ -109,47 +168,53 @@ public class YapayZeka {
 
     public boolean matrisKonumunaEkle(int[][] matris, int oyunSirasi, int satir, int sutun) {
         if (matris[satir][sutun] != OyunKey.BOS.getDeger()) {
-            Log.d(TAG, "Eklenecek konum dolu");
             return false;
         }
         matris[satir][sutun] = oyunSirasi;
         return true;
     }
 
+    public boolean matrisBosMu(int[][] matris) {
+        boolean bosMu = false;
+        for (int[] ints : matris) {
+            for (int j = 0; j < matris.length; j++) {
+                if ((!bosMu) && (ints[j] == OyunKey.BOS.getDeger())) {
+                    bosMu = true;
+                    break;
+                }
+            }
+        }
+        return bosMu;
+    }
+
     public void tamamlandiMi(int[][] matris) {
 
-        String mesaj = "";
         for (int i = 0; i < matris.length; i++) {
             for (int j = 0; j < matris.length; j++) {
                 int matrisDegeri = matris[i][j];
                 if (matrisDegeri != OyunKey.BOS.getDeger()) {
                     if (((j + 2) < matris.length)) {
                         if ((matris[i][j] == matris[i][j + 1]) && (matris[i][j] == matris[i][j + 2])) {
-//                            mesaj = "Yatayda 3 tane " + matrisDegeri + " bulundu.";
-                            bulunduMu = true;
+                            xoxBulunduMu = true;
                         }
                     }
                     if ((i + 2) < matris.length) {
                         if ((matris[i][j] == matris[i + 1][j]) && (matris[i + 1][j] == matris[i + 2][j])) {
-//                            mesaj = "Dikeyde 3 tane " + matrisDegeri + " bulundu.";
-                            bulunduMu = true;
+                            xoxBulunduMu = true;
                         }
                     }
                     if (((i + 2) < matris.length) && ((j + 2) < matris.length)) {
                         if ((matris[i][j] == matris[i + 1][j + 1]) && (matris[i + 1][j + 1] == matris[i + 2][j + 2])) {
-//                            mesaj = "Çaprazda aşağıya 3 tane " + matrisDegeri + " bulundu.";
-                            bulunduMu = true;
+                            xoxBulunduMu = true;
                         }
                     }
                     if (((i - 2) >= 0) && ((j + 2) < matris.length)) {
                         if ((matris[i][j] == matris[i - 1][j + 1]) && (matris[i - 1][j + 1] == matris[i - 2][j + 2])) {
-//                            mesaj = "Çaprazda yukarıya 3 tane " + matrisDegeri + " bulundu.";
-                            bulunduMu = true;
+                            xoxBulunduMu = true;
                         }
                     }
                 }
             }
         }
-//        if (bulunduMu) Toast.makeText(mContext, mesaj, Toast.LENGTH_SHORT).show();
     }
 }
