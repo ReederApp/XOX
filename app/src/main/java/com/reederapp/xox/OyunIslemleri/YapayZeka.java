@@ -12,6 +12,9 @@ public class YapayZeka {
     private final Context mContext;
 
     public static boolean xoxBulunduMu = false;
+    public static int btnBirSatir, btnBirSutun;
+    public static int btnIkiSatir, btnIkiSutun;
+    public static int btnUcSatir, btnUcSutun;
 
     public YapayZeka(Button[][] buttons, Context mContext) {
         this.buttons = buttons;
@@ -20,7 +23,11 @@ public class YapayZeka {
 
     public void defansAtakKontrolu(int[][] xoxMatrisi, int digerSira) {
         boolean defansYapildiMi = defansYap(xoxMatrisi, digerSira);
-        if (!defansYapildiMi) atakYap(xoxMatrisi, digerSira);
+        if (!defansYapildiMi) {
+            int sira = digerSira == OyunKey.X.getDeger() ? OyunKey.O.getDeger() : OyunKey.X.getDeger();
+            boolean atakYapildiMi = defansYap(xoxMatrisi, sira);
+            if (!atakYapildiMi) atakYap(xoxMatrisi, digerSira);
+        }
     }
 
     private boolean defansYap(int[][] matris, int oyunSirasi) {
@@ -196,25 +203,38 @@ public class YapayZeka {
                     if (((j + 2) < matris.length)) {
                         if ((matris[i][j] == matris[i][j + 1]) && (matris[i][j] == matris[i][j + 2])) {
                             xoxBulunduMu = true;
+                            btnDegerleriniSetle(i, j, i, j + 1, i, j + 2);
                         }
                     }
                     if ((i + 2) < matris.length) {
                         if ((matris[i][j] == matris[i + 1][j]) && (matris[i + 1][j] == matris[i + 2][j])) {
                             xoxBulunduMu = true;
+                            btnDegerleriniSetle(i, j, i + 1, j, i + 2, j);
                         }
                     }
                     if (((i + 2) < matris.length) && ((j + 2) < matris.length)) {
                         if ((matris[i][j] == matris[i + 1][j + 1]) && (matris[i + 1][j + 1] == matris[i + 2][j + 2])) {
                             xoxBulunduMu = true;
+                            btnDegerleriniSetle(i, j, i + 1, j + 1, i + 2, j + 2);
                         }
                     }
                     if (((i - 2) >= 0) && ((j + 2) < matris.length)) {
                         if ((matris[i][j] == matris[i - 1][j + 1]) && (matris[i - 1][j + 1] == matris[i - 2][j + 2])) {
                             xoxBulunduMu = true;
+                            btnDegerleriniSetle(i, j, i - 1, j + 1, i - 2, j + 2);
                         }
                     }
                 }
             }
         }
+    }
+
+    private void btnDegerleriniSetle(int i1, int j1, int i2, int j2, int i3, int j3) {
+        btnBirSatir = i1;
+        btnIkiSatir = i2;
+        btnUcSatir = i3;
+        btnBirSutun = j1;
+        btnIkiSutun = j2;
+        btnUcSutun = j3;
     }
 }

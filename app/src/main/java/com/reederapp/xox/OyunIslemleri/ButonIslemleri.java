@@ -5,15 +5,18 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.reederapp.xox.enums.OyunKey;
+import com.reederapp.xox.interfaces.Buttons;
 
 public class ButonIslemleri {
 
-    private YapayZeka zeka;
-    private Context mContext;
+    private final YapayZeka zeka;
+    private final Context mContext;
+    private final Buttons buttons;
 
-    public ButonIslemleri(YapayZeka zeka, Context mContext) {
+    public ButonIslemleri(YapayZeka zeka, Context mContext, Buttons buttons) {
         this.zeka = zeka;
         this.mContext = mContext;
+        this.buttons = buttons;
     }
 
     public void oyunuBaslat(int[][] xoxMatrisi, int oyunSirasi, int satir, int sutun, Button button) {
@@ -30,25 +33,36 @@ public class ButonIslemleri {
                 siradakiOyuncuTexti = "X";
                 digerSira = OyunKey.X.getDeger();
             }
-
-            boolean oyunBittiMi = zeka.xoxBulunduMu;
-            if (!oyunBittiMi) {
+            if (!YapayZeka.xoxBulunduMu) {
                 boolean matrisEklendiMi = zeka.matrisKonumunaEkle(xoxMatrisi, oyunSirasi, satir, sutun);
                 if (matrisEklendiMi) {
                     zeka.tamamlandiMi(xoxMatrisi);
                     button.setText(gecerliOyuncuTexti);
-                    if (!zeka.xoxBulunduMu) {
+                    if (!YapayZeka.xoxBulunduMu) {
                         zeka.defansAtakKontrolu(xoxMatrisi, digerSira);
                         zeka.tamamlandiMi(xoxMatrisi);
-                        if (zeka.xoxBulunduMu) {
+                        if (YapayZeka.xoxBulunduMu) {
                             Toast.makeText(mContext, siradakiOyuncuTexti + " oyunu kazandı", Toast.LENGTH_SHORT).show();
+                            buttons.buttonKazananRengiGuncelle(
+                                    YapayZeka.btnBirSatir,
+                                    YapayZeka.btnBirSutun,
+                                    YapayZeka.btnIkiSatir,
+                                    YapayZeka.btnIkiSutun,
+                                    YapayZeka.btnUcSatir,
+                                    YapayZeka.btnUcSutun);
                         }
                         if (!zeka.matrisBosMu(xoxMatrisi)) {
                             Toast.makeText(mContext, "Oyun berabere bitti", Toast.LENGTH_SHORT).show();
-
                         }
                     } else {
                         Toast.makeText(mContext, gecerliOyuncuTexti + " oyunu kazandı", Toast.LENGTH_SHORT).show();
+                        buttons.buttonKazananRengiGuncelle(
+                                YapayZeka.btnBirSatir,
+                                YapayZeka.btnBirSutun,
+                                YapayZeka.btnIkiSatir,
+                                YapayZeka.btnIkiSutun,
+                                YapayZeka.btnUcSatir,
+                                YapayZeka.btnUcSutun);
                     }
                 }
             }
@@ -64,6 +78,12 @@ public class ButonIslemleri {
                 buttons[i][j].setText("");
             }
         }
+        this.buttons.buttonRengiSifirla(YapayZeka.btnBirSatir,
+                YapayZeka.btnBirSutun,
+                YapayZeka.btnIkiSatir,
+                YapayZeka.btnIkiSutun,
+                YapayZeka.btnUcSatir,
+                YapayZeka.btnUcSutun);
     }
 
     public void matrisiDoldur(int[][] xoxMatrisi) {

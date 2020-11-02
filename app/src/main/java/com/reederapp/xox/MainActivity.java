@@ -1,5 +1,6 @@
 package com.reederapp.xox;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -8,9 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.reederapp.xox.OyunIslemleri.ButonIslemleri;
 import com.reederapp.xox.OyunIslemleri.YapayZeka;
 import com.reederapp.xox.enums.OyunKey;
+import com.reederapp.xox.interfaces.Buttons;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Buttons {
 
     private Button[][] buttons;
     private ButonIslemleri butonIslemi;
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         buttons = new Button[3][3];
         int[][] xoxMatrisi = new int[3][3];
         YapayZeka zeka = new YapayZeka(buttons, this.getApplicationContext());
-        butonIslemi = new ButonIslemleri(zeka, this.getApplicationContext());
+        butonIslemi = new ButonIslemleri(zeka, this.getApplicationContext(), this);
         butonIslemi.matrisiDoldur(xoxMatrisi);
         onClickIslemleri(xoxMatrisi);
     }
@@ -86,5 +88,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void buttonKazananRengiGuncelle(int i1, int j1, int i2, int j2, int i3, int j3) {
 
+        buttons[i1][j1].setBackgroundColor(Color.RED);
+        buttons[i2][j2].setBackgroundColor(Color.RED);
+        buttons[i3][j3].setBackgroundColor(Color.RED);
+
+    }
+
+    @Override
+    public void buttonRengiSifirla(int i1, int j1, int i2, int j2, int i3, int j3) {
+        buttons[i1][j1].setBackgroundColor(getResources().getColor(R.color.purple_500));
+        buttons[i2][j2].setBackgroundColor(getResources().getColor(R.color.purple_500));
+        buttons[i3][j3].setBackgroundColor(getResources().getColor(R.color.purple_500));
+    }
 }
