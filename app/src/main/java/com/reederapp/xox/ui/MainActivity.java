@@ -1,0 +1,29 @@
+package com.reederapp.xox.ui;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.reederapp.xox.R;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button btnStart = findViewById(R.id.buttonPlayGame);
+        Button btnQuit = findViewById(R.id.btnQuit);
+
+        btnStart.setOnClickListener(v -> {
+            startActivity(new Intent(v.getContext(), GameActivity.class));
+        });
+        btnQuit.setOnClickListener(v -> {
+            finish();
+        });
+
+    }
+}
