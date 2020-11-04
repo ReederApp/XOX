@@ -1,5 +1,6 @@
 package com.reederapp.xox.ui;
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -46,7 +47,7 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
 
     private void init() {
         xoxMatrisi = new int[3][3];
-        butonIslemi = new MatrisIslemleri(new YapayZeka(buttons), this);
+        butonIslemi = new MatrisIslemleri(new YapayZeka(buttons, this), this);
         butonIslemi.matrisiDoldur(xoxMatrisi);
         onClickIslemleri(xoxMatrisi);
     }
@@ -104,6 +105,9 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 buttons[i][j].setText("");
+                GradientDrawable gradientDrawable = (GradientDrawable) buttons[i][j].getBackground();
+                gradientDrawable.setColor(getResources().getColor(R.color.purple_500));
+                buttons[i][j].setBackground(gradientDrawable);
             }
         }
     }
@@ -163,5 +167,21 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
             Toast.makeText(this, "Game equals!", Toast.LENGTH_LONG).show();
         }
         updatePoints();
+    }
+
+    @Override
+    public void btnDegerleriniSetle(int i1, int j1, int i2, int j2, int i3, int j3) {
+        GradientDrawable gradientDrawable = (GradientDrawable) buttons[i1][j1].getBackground();
+        gradientDrawable.setColor(getResources().getColor(R.color.white));
+        buttons[i1][j1].setBackground(gradientDrawable);
+
+        gradientDrawable = (GradientDrawable) buttons[i2][j2].getBackground();
+        gradientDrawable.setColor(getResources().getColor(R.color.white));
+        buttons[i2][j2].setBackground(gradientDrawable);
+
+        gradientDrawable = (GradientDrawable) buttons[i3][j3].getBackground();
+        gradientDrawable.setColor(getResources().getColor(R.color.white));
+        buttons[i3][j3].setBackground(gradientDrawable);
+
     }
 }
