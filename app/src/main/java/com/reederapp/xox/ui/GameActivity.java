@@ -145,10 +145,10 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         this.hazirMi = false;
         if (oyunKey == OyunKey.O.getDeger()) {
             player1Points++;
-            Toast.makeText(this, "Player 1 wins!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Player 2 wins!", Toast.LENGTH_LONG).show();
         } else if (oyunKey == OyunKey.X.getDeger()) {
             player2Points++;
-            Toast.makeText(this, "Player 2 wins!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Player 1 wins!", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "Game equals!", Toast.LENGTH_LONG).show();
         }
