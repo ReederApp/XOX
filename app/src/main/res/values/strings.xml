@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">XOX</string>
+    <string name="app_name">TIC-TAC-TOE</string>
+    <string name="turnOfX">TURN OF : X</string>
+    <string name="turnOfO">TURN OF : O</string>
+    <string name="player1">Player1 </string>
+    <string name="player2"> Player2</string>
+    <string name="playAgain">PLAY AGAIN</string>
 </resources>
