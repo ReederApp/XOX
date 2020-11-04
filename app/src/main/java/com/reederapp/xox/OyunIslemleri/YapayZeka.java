@@ -101,7 +101,7 @@ public class YapayZeka {
         return eklendiMi;
     }
 
-    private void tekliKontrol(int[][] matris, int oyunSirasi) {
+    public void tekliKontrol(int[][] matris, int oyunSirasi) {
         boolean eklendiMi = false;
         for (int i = 0; i < matris.length; i++) {
             for (int j = 0; j < matris.length; j++) {

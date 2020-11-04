@@ -22,6 +22,10 @@ public class MatrisIslemleri {
         handler.removeCallbacks(null);
     }
 
+    public void bilgisayarHamlesi(int[][] xoxMatrisi, int gecerliOyuncu) {
+        zeka.tekliKontrol(xoxMatrisi, gecerliOyuncu);
+    }
+
     public void hamleYap(int[][] xoxMatrisi, int gecerliOyuncu, int satir, int sutun, Button button) {
 
         boolean matrisBosMu = zeka.matrisBosMu(xoxMatrisi);
@@ -38,10 +42,11 @@ public class MatrisIslemleri {
                 siradakiOyuncu = OyunKey.X.getDeger();
             }
             if (!YapayZeka.xoxBulunduMu) {
-                oyunInterfaces.oyunSirasi(siradakiOyuncuTexti);
-                oyunInterfaces.tiklamaKontrolu(false);
+
                 boolean matrisEklendiMi = zeka.matrisKonumunaEkle(xoxMatrisi, gecerliOyuncu, satir, sutun);
                 if (matrisEklendiMi) {
+                    oyunInterfaces.oyunSirasi(siradakiOyuncuTexti);
+                    oyunInterfaces.tiklamaKontrolu(false);
                     zeka.tamamlandiMi(xoxMatrisi);
                     button.setText(gecerliOyuncuTexti);
                     if (!YapayZeka.xoxBulunduMu) {
