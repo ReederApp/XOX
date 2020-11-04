@@ -116,6 +116,7 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         butonIslemi.hamleDurdur();
         butonIslemi.matrisiBosalt(xoxMatrisi);
         YapayZeka.xoxBulunduMu = false;
+        this.hazirMi = true;
         updatePoints();
         resetBoard();
     }
@@ -124,6 +125,7 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         butonIslemi.hamleDurdur();
         butonIslemi.matrisiBosalt(xoxMatrisi);
         YapayZeka.xoxBulunduMu = false;
+        this.hazirMi = true;
         player1Points = 0;
         player2Points = 0;
         updatePoints();
