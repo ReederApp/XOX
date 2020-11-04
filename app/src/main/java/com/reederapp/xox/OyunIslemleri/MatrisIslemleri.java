@@ -1,19 +1,23 @@
 package com.reederapp.xox.OyunIslemleri;
 
 import android.content.Context;
+import android.os.Handler;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.reederapp.xox.OyunInterfaces;
 import com.reederapp.xox.enums.OyunKey;
 
 public class MatrisIslemleri {
 
     private final YapayZeka zeka;
     private final Context mContext;
+    private OyunInterfaces oyunInterfaces;
 
-    public MatrisIslemleri(YapayZeka zeka, Context mContext) {
+    public MatrisIslemleri(YapayZeka zeka, Context mContext, OyunInterfaces oyunInterfaces) {
         this.zeka = zeka;
         this.mContext = mContext;
+        this.oyunInterfaces = oyunInterfaces;
     }
 
     public void hamleYap(int[][] xoxMatrisi, int oyunSirasi, int satir, int sutun, Button button) {
@@ -31,19 +35,27 @@ public class MatrisIslemleri {
                 digerSira = OyunKey.X.getDeger();
             }
             if (!YapayZeka.xoxBulunduMu) {
+                oyunInterfaces.oyunSirasi(siradakiOyuncuTexti);
+                oyunInterfaces.tiklamaKontrolu(false);
                 boolean matrisEklendiMi = zeka.matrisKonumunaEkle(xoxMatrisi, oyunSirasi, satir, sutun);
                 if (matrisEklendiMi) {
                     zeka.tamamlandiMi(xoxMatrisi);
                     button.setText(gecerliOyuncuTexti);
                     if (!YapayZeka.xoxBulunduMu) {
-                        zeka.defansAtakKontrolu(xoxMatrisi, digerSira);
-                        zeka.tamamlandiMi(xoxMatrisi);
-                        if (YapayZeka.xoxBulunduMu) {
-                            Toast.makeText(mContext, siradakiOyuncuTexti + " oyunu kazandı", Toast.LENGTH_SHORT).show();
-                        }
-                        if (!zeka.matrisBosMu(xoxMatrisi)) {
-                            Toast.makeText(mContext, "Oyun berabere bitti", Toast.LENGTH_SHORT).show();
-                        }
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> {
+                            oyunInterfaces.oyunSirasi(gecerliOyuncuTexti);
+                            zeka.defansAtakKontrolu(xoxMatrisi, digerSira);
+                            zeka.tamamlandiMi(xoxMatrisi);
+                            if (YapayZeka.xoxBulunduMu) {
+                                Toast.makeText(mContext, siradakiOyuncuTexti + " oyunu kazandı", Toast.LENGTH_SHORT).show();
+                            }
+                            if (!zeka.matrisBosMu(xoxMatrisi)) {
+                                Toast.makeText(mContext, "Oyun berabere bitti", Toast.LENGTH_SHORT).show();
+                            }
+                            oyunInterfaces.tiklamaKontrolu(true);
+                        }, 1000);
+
                     } else {
                         Toast.makeText(mContext, gecerliOyuncuTexti + " oyunu kazandı", Toast.LENGTH_SHORT).show();
                     }

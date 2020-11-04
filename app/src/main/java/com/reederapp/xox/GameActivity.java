@@ -11,11 +11,9 @@ import com.reederapp.xox.OyunIslemleri.MatrisIslemleri;
 import com.reederapp.xox.OyunIslemleri.YapayZeka;
 import com.reederapp.xox.enums.OyunKey;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements OyunInterfaces {
     private final Button[][] buttons = new Button[3][3];
     private boolean player1Turn = true;     //x for player1
-    private int count;    //9 for field
-
     private int player1Points;      // Player1 points
     private int player2Points;   //Player2 points
 
@@ -23,12 +21,13 @@ public class GameActivity extends AppCompatActivity {
     private TextView textViewTurn;
     private MatrisIslemleri butonIslemi;
     private int[][] xoxMatrisi;
+    private boolean hazirMi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_board);
-
+        hazirMi = true;
         textViewResult = findViewById(R.id.skorText);
         textViewTurn = findViewById(R.id.turnOf);
 
@@ -50,39 +49,44 @@ public class GameActivity extends AppCompatActivity {
 
     private void init() {
         xoxMatrisi = new int[3][3];
-        butonIslemi = new MatrisIslemleri(new YapayZeka(buttons), getApplicationContext());
+        butonIslemi = new MatrisIslemleri(new YapayZeka(buttons), getApplicationContext(), this);
         butonIslemi.matrisiDoldur(xoxMatrisi);
         onClickIslemleri(xoxMatrisi);
     }
 
     private void onClickIslemleri(int[][] xoxMatrisi) {
         buttons[0][0].setOnClickListener(v -> {
-            butonIslemi.hamleYap(xoxMatrisi, OyunKey.X.getDeger(), 0, 0, buttons[0][0]);
+            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 0, 0, buttons[0][0]);
         });
         buttons[0][1].setOnClickListener(v -> {
-            butonIslemi.hamleYap(xoxMatrisi, OyunKey.X.getDeger(), 0, 1, buttons[0][1]);
+            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 0, 1, buttons[0][1]);
         });
         buttons[0][2].setOnClickListener(v -> {
-            butonIslemi.hamleYap(xoxMatrisi, OyunKey.X.getDeger(), 0, 2, buttons[0][2]);
+            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 0, 2, buttons[0][2]);
         });
         buttons[1][0].setOnClickListener(v -> {
-            butonIslemi.hamleYap(xoxMatrisi, OyunKey.X.getDeger(), 1, 0, buttons[1][0]);
+            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 1, 0, buttons[1][0]);
         });
         buttons[1][1].setOnClickListener(v -> {
-            butonIslemi.hamleYap(xoxMatrisi, OyunKey.X.getDeger(), 1, 1, buttons[1][1]);
+            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 1, 1, buttons[1][1]);
         });
         buttons[1][2].setOnClickListener(v -> {
-            butonIslemi.hamleYap(xoxMatrisi, OyunKey.X.getDeger(), 1, 2, buttons[1][2]);
+            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 1, 2, buttons[1][2]);
         });
         buttons[2][0].setOnClickListener(v -> {
-            butonIslemi.hamleYap(xoxMatrisi, OyunKey.X.getDeger(), 2, 0, buttons[2][0]);
+            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 2, 0, buttons[2][0]);
         });
         buttons[2][1].setOnClickListener(v -> {
-            butonIslemi.hamleYap(xoxMatrisi, OyunKey.X.getDeger(), 2, 1, buttons[2][1]);
+            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 2, 1, buttons[2][1]);
         });
         buttons[2][2].setOnClickListener(v -> {
-            butonIslemi.hamleYap(xoxMatrisi, OyunKey.X.getDeger(), 2, 2, buttons[2][2]);
+            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 2, 2, buttons[2][2]);
         });
+    }
+
+    private void tiklamayaHazir(int[][] xoxMatrisi, int oyunSirasi, int satir, int sutun, Button button) {
+        if (this.hazirMi)
+            butonIslemi.hamleYap(xoxMatrisi, oyunSirasi, satir, sutun, button);
     }
 //
 //    @Override
@@ -131,7 +135,6 @@ public class GameActivity extends AppCompatActivity {
                 buttons[i][j].setText("");
             }
         }
-        count = 0;
         player1Turn = true;
     }
 
@@ -145,7 +148,6 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) { //for rotate
         super.onSaveInstanceState(outState);
-        outState.putInt("count", count);
         outState.putInt("player1Points", player1Points);
         outState.putInt("player2Points", player2Points);
         outState.putBoolean("player1Turn", player1Turn);
@@ -155,9 +157,18 @@ public class GameActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) { //for rotate
         super.onRestoreInstanceState(savedInstanceState);
 
-        count = savedInstanceState.getInt("count");
         player1Points = savedInstanceState.getInt("player1Points");
         player2Points = savedInstanceState.getInt("player2Points");
         player1Turn = savedInstanceState.getBoolean("player1Turn");
+    }
+
+    @Override
+    public void oyunSirasi(String sira) {
+        textViewTurn.setText("TURN OF: " + sira);
+    }
+
+    @Override
+    public void tiklamaKontrolu(boolean hazirMi) {
+        this.hazirMi = hazirMi;
     }
 }
