@@ -25,6 +25,10 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
     private MatrisIslemleri butonIslemi;
     private int[][] xoxMatrisi;
     private boolean hazirMi;
+    private int i;
+
+    private boolean kullaniciMiBaslayacak;
+    private int kullaniciSirasi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +37,9 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         hazirMi = true;
         textViewResult = findViewById(R.id.skorText);
         textViewTurn = findViewById(R.id.turnOf);
-
+        kullaniciMiBaslayacak = true;
+        i = 0;
+        kullaniciSirasi = OyunKey.X.getDeger();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 String buttonID = "button_" + i + j;
@@ -54,31 +60,31 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
 
     private void onClickIslemleri(int[][] xoxMatrisi) {
         buttons[0][0].setOnClickListener(v -> {
-            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 0, 0, buttons[0][0]);
+            tiklamayaHazir(xoxMatrisi, kullaniciSirasi, 0, 0, buttons[0][0]);
         });
         buttons[0][1].setOnClickListener(v -> {
-            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 0, 1, buttons[0][1]);
+            tiklamayaHazir(xoxMatrisi, kullaniciSirasi, 0, 1, buttons[0][1]);
         });
         buttons[0][2].setOnClickListener(v -> {
-            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 0, 2, buttons[0][2]);
+            tiklamayaHazir(xoxMatrisi, kullaniciSirasi, 0, 2, buttons[0][2]);
         });
         buttons[1][0].setOnClickListener(v -> {
-            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 1, 0, buttons[1][0]);
+            tiklamayaHazir(xoxMatrisi, kullaniciSirasi, 1, 0, buttons[1][0]);
         });
         buttons[1][1].setOnClickListener(v -> {
-            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 1, 1, buttons[1][1]);
+            tiklamayaHazir(xoxMatrisi, kullaniciSirasi, 1, 1, buttons[1][1]);
         });
         buttons[1][2].setOnClickListener(v -> {
-            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 1, 2, buttons[1][2]);
+            tiklamayaHazir(xoxMatrisi, kullaniciSirasi, 1, 2, buttons[1][2]);
         });
         buttons[2][0].setOnClickListener(v -> {
-            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 2, 0, buttons[2][0]);
+            tiklamayaHazir(xoxMatrisi, kullaniciSirasi, 2, 0, buttons[2][0]);
         });
         buttons[2][1].setOnClickListener(v -> {
-            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 2, 1, buttons[2][1]);
+            tiklamayaHazir(xoxMatrisi, kullaniciSirasi, 2, 1, buttons[2][1]);
         });
         buttons[2][2].setOnClickListener(v -> {
-            tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 2, 2, buttons[2][2]);
+            tiklamayaHazir(xoxMatrisi, kullaniciSirasi, 2, 2, buttons[2][2]);
         });
         Button btnPlayAgain = findViewById(R.id.btnPlayAgain);
         btnPlayAgain.setOnClickListener(view -> {
@@ -93,12 +99,17 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
 
     private void tiklamayaHazir(int[][] xoxMatrisi, int oyunSirasi, int satir, int sutun, Button button) {
         if (this.hazirMi) {
-            butonIslemi.hamleYap(xoxMatrisi, oyunSirasi, satir, sutun, button);
+            if (!kullaniciMiBaslayacak) {
+                butonIslemi.bilgisayarHamlesi(xoxMatrisi, oyunSirasi);
+                kullaniciMiBaslayacak = true;
+            } else {
+                butonIslemi.hamleYap(xoxMatrisi, oyunSirasi, satir, sutun, button);
+            }
         }
     }
 
     private void updatePoints() {
-        textViewResult.setText("Player1 " + player1Points + "- " + player2Points + " Player2");
+        textViewResult.setText("Player1 " + player2Points + "- " + player1Points + " Player2");
     }
 
     private void resetBoard() {
@@ -119,6 +130,35 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         this.hazirMi = true;
         updatePoints();
         resetBoard();
+
+        if (!kullaniciMiBaslayacak) {
+            kullaniciSirasi = kullaniciSirasi == OyunKey.X.getDeger() ? OyunKey.O.getDeger() : OyunKey.X.getDeger();
+
+            butonIslemi.bilgisayarHamlesi(xoxMatrisi, kullaniciSirasi);
+            kullaniciSirasi = kullaniciSirasi == OyunKey.X.getDeger() ? OyunKey.O.getDeger() : OyunKey.X.getDeger();
+            kullaniciMiBaslayacak = true;
+        }
+    }
+
+    @Override
+    public void oyunuKazanan(int oyunKey) {
+        this.hazirMi = false;
+        if (oyunKey == OyunKey.O.getDeger()) {
+            player1Points++;
+            Toast.makeText(this, "Player 1 wins!", Toast.LENGTH_LONG).show();
+        } else if (oyunKey == OyunKey.X.getDeger()) {
+            player2Points++;
+            Toast.makeText(this, "Player 2 wins!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Game equals!", Toast.LENGTH_LONG).show();
+        }
+        updatePoints();
+        i++;
+        if (kullaniciMiBaslayacak) {
+            if (i % 2 == 1)
+                kullaniciMiBaslayacak = !kullaniciMiBaslayacak;
+        }
+
     }
 
     private void resetGame() {
@@ -130,7 +170,15 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         player2Points = 0;
         updatePoints();
         resetBoard();
+        if (!kullaniciMiBaslayacak) {
+            kullaniciSirasi = kullaniciSirasi == OyunKey.X.getDeger() ? OyunKey.O.getDeger() : OyunKey.X.getDeger();
+
+            butonIslemi.bilgisayarHamlesi(xoxMatrisi, kullaniciSirasi);
+            kullaniciSirasi = kullaniciSirasi == OyunKey.X.getDeger() ? OyunKey.O.getDeger() : OyunKey.X.getDeger();
+            kullaniciMiBaslayacak = true;
+        }
     }
+
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) { //for rotate
@@ -157,19 +205,6 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         this.hazirMi = hazirMi;
     }
 
-    @Override
-    public void oyunuKazanan(int oyunKey) {
-        if (oyunKey == OyunKey.O.getDeger()) {
-            player1Points++;
-            Toast.makeText(this, "Player 1 wins!", Toast.LENGTH_LONG).show();
-        } else if (oyunKey == OyunKey.X.getDeger()) {
-            player2Points++;
-            Toast.makeText(this, "Player 2 wins!", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Game equals!", Toast.LENGTH_LONG).show();
-        }
-        updatePoints();
-    }
 
     @Override
     public void btnDegerleriniSetle(int i1, int j1, int i2, int j2, int i3, int j3) {
