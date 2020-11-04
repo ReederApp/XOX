@@ -4,6 +4,8 @@ import android.widget.Button;
 
 import com.reederapp.xox.enums.OyunKey;
 
+import java.util.Random;
+
 public class YapayZeka {
     private final Button[][] buttons;
     public static boolean xoxBulunduMu = false;
@@ -135,18 +137,35 @@ public class YapayZeka {
             }
         }
         if (!eklendiMi) {
-            if (matris[0][matris.length - 1] == OyunKey.BOS.getDeger()) {
-                matris[0][matris.length - 1] = oyunSirasi;
-                buttons[0][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
-            } else if (matris[matris.length - 1][0] == OyunKey.BOS.getDeger()) {
-                matris[matris.length - 1][0] = oyunSirasi;
-                buttons[matris.length - 1][0].setText(getOyunSirasiText(oyunSirasi));
-            } else if (matris[matris.length - 1][matris.length - 1] == OyunKey.BOS.getDeger()) {
-                matris[matris.length - 1][matris.length - 1] = oyunSirasi;
-                buttons[matris.length - 1][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
-            } else if (matris[0][0] == OyunKey.BOS.getDeger()) {
-                matris[0][0] = oyunSirasi;
-                buttons[0][0].setText(getOyunSirasiText(oyunSirasi));
+            Random random = new Random();
+            int randomNumber = random.nextInt(5);
+            if (randomNumber == 0 && !eklendiMi) {
+                if (matris[0][matris.length - 1] == OyunKey.BOS.getDeger()) {
+                    matris[0][matris.length - 1] = oyunSirasi;
+                    buttons[0][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
+                    eklendiMi = true;
+                }
+            }
+            if (randomNumber == 1 && !eklendiMi) {
+                if (matris[matris.length - 1][0] == OyunKey.BOS.getDeger()) {
+                    matris[matris.length - 1][0] = oyunSirasi;
+                    buttons[matris.length - 1][0].setText(getOyunSirasiText(oyunSirasi));
+                    eklendiMi = true;
+                }
+            }
+            if (randomNumber == 2 && !eklendiMi) {
+                if (matris[matris.length - 1][matris.length - 1] == OyunKey.BOS.getDeger()) {
+                    matris[matris.length - 1][matris.length - 1] = oyunSirasi;
+                    buttons[matris.length - 1][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
+                    eklendiMi = true;
+                }
+            }
+            if (randomNumber == 3 && !eklendiMi) {
+                if (matris[0][0] == OyunKey.BOS.getDeger()) {
+                    matris[0][0] = oyunSirasi;
+                    buttons[0][0].setText(getOyunSirasiText(oyunSirasi));
+                    eklendiMi = true;
+                }
             } else {
                 for (int i = 0; i < matris.length; i++) {
                     for (int j = 0; j < matris.length; j++) {

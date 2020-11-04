@@ -1,19 +1,21 @@
-package com.reederapp.xox;
+package com.reederapp.xox.ui;
 
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.reederapp.xox.OyunIslemleri.MatrisIslemleri;
 import com.reederapp.xox.OyunIslemleri.YapayZeka;
+import com.reederapp.xox.R;
 import com.reederapp.xox.enums.OyunKey;
+import com.reederapp.xox.interfaces.OyunInterfaces;
 
 public class GameActivity extends AppCompatActivity implements OyunInterfaces {
     private final Button[][] buttons = new Button[3][3];
-    private boolean player1Turn = true;     //x for player1
     private int player1Points;      // Player1 points
     private int player2Points;   //Player2 points
 
@@ -39,17 +41,12 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
             }
         }
         init();
-        Button buttonPlayAgain = findViewById(R.id.btnPlayAgain);
-        buttonPlayAgain.setOnClickListener(view -> {
-            resetGame();
-            butonIslemi.matrisiBosalt(xoxMatrisi, buttons);
-            YapayZeka.xoxBulunduMu = false;
-        });
+        restartGame();
     }
 
     private void init() {
         xoxMatrisi = new int[3][3];
-        butonIslemi = new MatrisIslemleri(new YapayZeka(buttons), getApplicationContext(), this);
+        butonIslemi = new MatrisIslemleri(new YapayZeka(buttons), this);
         butonIslemi.matrisiDoldur(xoxMatrisi);
         onClickIslemleri(xoxMatrisi);
     }
@@ -82,51 +79,25 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         buttons[2][2].setOnClickListener(v -> {
             tiklamayaHazir(xoxMatrisi, OyunKey.X.getDeger(), 2, 2, buttons[2][2]);
         });
+        Button btnPlayAgain = findViewById(R.id.btnPlayAgain);
+        btnPlayAgain.setOnClickListener(view -> {
+            restartGame();
+        });
+
+        Button btnResetGame = findViewById(R.id.btnResetGame);
+        btnResetGame.setOnClickListener(view -> {
+            resetGame();
+        });
     }
 
     private void tiklamayaHazir(int[][] xoxMatrisi, int oyunSirasi, int satir, int sutun, Button button) {
-        if (this.hazirMi)
+        if (this.hazirMi) {
             butonIslemi.hamleYap(xoxMatrisi, oyunSirasi, satir, sutun, button);
+        }
     }
-//
-//    @Override
-//    public void onClick(View view) {
-//        if (!((Button) view).getText().toString().equals("")) {
-//            return;
-//        }
-//        if (player1Turn) { //is player1Turn
-//            ((Button) view).setText("X");
-//            textViewTurn.setText("TURN OF: X");
-//
-//        } else {
-//            ((Button) view).setText("O");
-//            textViewTurn.setText("TURN OF: O");
-//        }
-//        count++;
-//
-//        if (checkWin()) {
-//            if (player1Turn) {
-//                player1Points++;
-//                Toast.makeText(this, "Player 1 wins!", Toast.LENGTH_LONG).show();
-//            } else {
-//                player2Points++;
-//                Toast.makeText(this, "Player 2 wins!", Toast.LENGTH_LONG).show();
-//            }
-//            updatePoints();
-//            resetBoard();
-//
-//        } else if (count == 9) {
-//            Toast.makeText(this, "Draw!", Toast.LENGTH_LONG).show();
-//            resetBoard();
-//
-//        } else {
-//            player1Turn = !player1Turn;
-//        }
-//    }
 
     private void updatePoints() {
         textViewResult.setText("Player1 " + player1Points + "- " + player2Points + " Player2");
-
     }
 
     private void resetBoard() {
@@ -135,10 +106,20 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
                 buttons[i][j].setText("");
             }
         }
-        player1Turn = true;
+    }
+
+    private void restartGame() {
+        butonIslemi.hamleDurdur();
+        butonIslemi.matrisiBosalt(xoxMatrisi);
+        YapayZeka.xoxBulunduMu = false;
+        updatePoints();
+        resetBoard();
     }
 
     private void resetGame() {
+        butonIslemi.hamleDurdur();
+        butonIslemi.matrisiBosalt(xoxMatrisi);
+        YapayZeka.xoxBulunduMu = false;
         player1Points = 0;
         player2Points = 0;
         updatePoints();
@@ -150,7 +131,6 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
         super.onSaveInstanceState(outState);
         outState.putInt("player1Points", player1Points);
         outState.putInt("player2Points", player2Points);
-        outState.putBoolean("player1Turn", player1Turn);
     }
 
     @Override
@@ -159,7 +139,6 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
 
         player1Points = savedInstanceState.getInt("player1Points");
         player2Points = savedInstanceState.getInt("player2Points");
-        player1Turn = savedInstanceState.getBoolean("player1Turn");
     }
 
     @Override
@@ -170,5 +149,19 @@ public class GameActivity extends AppCompatActivity implements OyunInterfaces {
     @Override
     public void tiklamaKontrolu(boolean hazirMi) {
         this.hazirMi = hazirMi;
+    }
+
+    @Override
+    public void oyunuKazanan(int oyunKey) {
+        if (oyunKey == OyunKey.O.getDeger()) {
+            player1Points++;
+            Toast.makeText(this, "Player 1 wins!", Toast.LENGTH_LONG).show();
+        } else if (oyunKey == OyunKey.X.getDeger()) {
+            player2Points++;
+            Toast.makeText(this, "Player 2 wins!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Game equals!", Toast.LENGTH_LONG).show();
+        }
+        updatePoints();
     }
 }

@@ -1,10 +1,12 @@
-package com.reederapp.xox;
+package com.reederapp.xox.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.reederapp.xox.R;
 
 public class MainActivity extends AppCompatActivity {
 
