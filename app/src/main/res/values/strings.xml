@@ -5,4 +5,5 @@
     <string name="player1">Player1 </string>
     <string name="player2"> Player2</string>
     <string name="playAgain">PLAY AGAIN</string>
+    <string name="playReset">RESET GAME</string>
 </resources>

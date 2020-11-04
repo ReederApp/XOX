@@ -1,64 +1,88 @@
 package com.reederapp.xox.OyunIslemleri;
 
-import android.content.Context;
+import android.os.Handler;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.reederapp.xox.enums.OyunKey;
+import com.reederapp.xox.interfaces.OyunInterfaces;
 
 public class MatrisIslemleri {
 
     private final YapayZeka zeka;
-    private final Context mContext;
+    private final OyunInterfaces oyunInterfaces;
+    private final Handler handler;
+    private Runnable runnable;
+    private boolean handlerIsRunning;
 
-    public MatrisIslemleri(YapayZeka zeka, Context mContext) {
+    public MatrisIslemleri(YapayZeka zeka, OyunInterfaces oyunInterfaces) {
         this.zeka = zeka;
-        this.mContext = mContext;
+        this.oyunInterfaces = oyunInterfaces;
+        handler = new Handler();
+        handlerIsRunning = false;
     }
 
-    public void hamleYap(int[][] xoxMatrisi, int oyunSirasi, int satir, int sutun, Button button) {
-        boolean matrisBosMu = zeka.matrisBosMu(xoxMatrisi);
-        if (matrisBosMu) {
-            String gecerliOyuncuTexti, siradakiOyuncuTexti;
-            int digerSira;
-            if (oyunSirasi == OyunKey.X.getDeger()) {
-                gecerliOyuncuTexti = "X";
-                siradakiOyuncuTexti = "O";
-                digerSira = OyunKey.O.getDeger();
-            } else {
-                gecerliOyuncuTexti = "O";
-                siradakiOyuncuTexti = "X";
-                digerSira = OyunKey.X.getDeger();
-            }
-            if (!YapayZeka.xoxBulunduMu) {
-                boolean matrisEklendiMi = zeka.matrisKonumunaEkle(xoxMatrisi, oyunSirasi, satir, sutun);
-                if (matrisEklendiMi) {
-                    zeka.tamamlandiMi(xoxMatrisi);
-                    button.setText(gecerliOyuncuTexti);
-                    if (!YapayZeka.xoxBulunduMu) {
-                        zeka.defansAtakKontrolu(xoxMatrisi, digerSira);
-                        zeka.tamamlandiMi(xoxMatrisi);
-                        if (YapayZeka.xoxBulunduMu) {
-                            Toast.makeText(mContext, siradakiOyuncuTexti + " oyunu kazandı", Toast.LENGTH_SHORT).show();
-                        }
-                        if (!zeka.matrisBosMu(xoxMatrisi)) {
-                            Toast.makeText(mContext, "Oyun berabere bitti", Toast.LENGTH_SHORT).show();
-                        }
+    public void hamleDurdur() {
+        if (handlerIsRunning) {
+            handler.removeCallbacks(runnable);
+
+        }
+        handlerIsRunning = false;
+    }
+
+    public void hamleYap(int[][] xoxMatrisi, int gecerliOyuncu, int satir, int sutun, Button button) {
+
+            boolean matrisBosMu = zeka.matrisBosMu(xoxMatrisi);
+            if (matrisBosMu) {
+                if (!handlerIsRunning) {
+                    String gecerliOyuncuTexti, siradakiOyuncuTexti;
+                    int siradakiOyuncu;
+                    if (gecerliOyuncu == OyunKey.X.getDeger()) {
+                        gecerliOyuncuTexti = "X";
+                        siradakiOyuncuTexti = "O";
+                        siradakiOyuncu = OyunKey.O.getDeger();
                     } else {
-                        Toast.makeText(mContext, gecerliOyuncuTexti + " oyunu kazandı", Toast.LENGTH_SHORT).show();
+                        gecerliOyuncuTexti = "O";
+                        siradakiOyuncuTexti = "X";
+                        siradakiOyuncu = OyunKey.X.getDeger();
                     }
+                    if (!YapayZeka.xoxBulunduMu) {
+                        oyunInterfaces.oyunSirasi(siradakiOyuncuTexti);
+                        oyunInterfaces.tiklamaKontrolu(false);
+                        boolean matrisEklendiMi = zeka.matrisKonumunaEkle(xoxMatrisi, gecerliOyuncu, satir, sutun);
+                        if (matrisEklendiMi) {
+                            zeka.tamamlandiMi(xoxMatrisi);
+                            button.setText(gecerliOyuncuTexti);
+                            if (!YapayZeka.xoxBulunduMu) {
+                                runnable = () -> {
+                                    handlerIsRunning = true;
+                                    oyunInterfaces.oyunSirasi(gecerliOyuncuTexti);
+                                    zeka.defansAtakKontrolu(xoxMatrisi, siradakiOyuncu);
+                                    zeka.tamamlandiMi(xoxMatrisi);
+                                    if (YapayZeka.xoxBulunduMu) {
+                                        oyunInterfaces.oyunuKazanan(siradakiOyuncu);
+                                    }
+                                    if (!zeka.matrisBosMu(xoxMatrisi)) {
+                                        oyunInterfaces.oyunuKazanan(OyunKey.BOS.getDeger());
+                                    }
+                                    oyunInterfaces.tiklamaKontrolu(true);
+                                    handlerIsRunning = false;
+                                };
+                                handler.postDelayed(runnable, 600);
+                            } else {
+                                oyunInterfaces.oyunuKazanan(gecerliOyuncu);
+                            }
+                        }
+                    }
+                } else {
+                    oyunInterfaces.oyunuKazanan(OyunKey.BOS.getDeger());
                 }
-            }
-        } else {
-            Toast.makeText(mContext, "Oyun bitti", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void matrisiBosalt(int[][] xoxMatrisi, Button[][] buttons) {
+    public void matrisiBosalt(int[][] xoxMatrisi) {
         for (int i = 0; i < xoxMatrisi.length; i++) {
             for (int j = 0; j < xoxMatrisi.length; j++) {
                 xoxMatrisi[i][j] = OyunKey.BOS.getDeger();
-                buttons[i][j].setText("");
             }
         }
     }

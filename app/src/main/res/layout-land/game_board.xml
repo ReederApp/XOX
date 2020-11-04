@@ -17,7 +17,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></TextView>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/skorText"></TextView>
+        app:layout_constraintTop_toBottomOf="@+id/skorText" />
 
 
     <Button
@@ -165,13 +165,25 @@
         android:id="@+id/btnPlayAgain"
         android:layout_width="300dp"
         android:layout_height="43dp"
-        android:layout_marginTop="12dp"
         android:background="@drawable/button_red"
         android:text="@string/playAgain"
         android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/btnResetGame"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_21" />
+        app:layout_constraintTop_toBottomOf="@+id/button_22" />
 
+    <Button
+        android:id="@+id/btnResetGame"
+        android:layout_width="300dp"
+        android:layout_height="43dp"
+        android:background="@drawable/button_red"
+        android:text="@string/playReset"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnPlayAgain" />
 </androidx.constraintlayout.widget.ConstraintLayout>

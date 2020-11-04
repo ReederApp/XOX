@@ -3,16 +3,18 @@ package com.reederapp.xox.OyunIslemleri;
 import android.widget.Button;
 
 import com.reederapp.xox.enums.OyunKey;
+import com.reederapp.xox.interfaces.OyunInterfaces;
+
+import java.util.Random;
 
 public class YapayZeka {
     private final Button[][] buttons;
     public static boolean xoxBulunduMu = false;
-    public static int btnBirSatir, btnBirSutun;
-    public static int btnIkiSatir, btnIkiSutun;
-    public static int btnUcSatir, btnUcSutun;
+    private OyunInterfaces oyunInterfaces;
 
-    public YapayZeka(Button[][] buttons) {
+    public YapayZeka(Button[][] buttons, OyunInterfaces interfaces) {
         this.buttons = buttons;
+        this.oyunInterfaces = interfaces;
     }
 
     public void defansAtakKontrolu(int[][] xoxMatrisi, int digerSira) {
@@ -135,18 +137,35 @@ public class YapayZeka {
             }
         }
         if (!eklendiMi) {
-            if (matris[0][matris.length - 1] == OyunKey.BOS.getDeger()) {
-                matris[0][matris.length - 1] = oyunSirasi;
-                buttons[0][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
-            } else if (matris[matris.length - 1][0] == OyunKey.BOS.getDeger()) {
-                matris[matris.length - 1][0] = oyunSirasi;
-                buttons[matris.length - 1][0].setText(getOyunSirasiText(oyunSirasi));
-            } else if (matris[matris.length - 1][matris.length - 1] == OyunKey.BOS.getDeger()) {
-                matris[matris.length - 1][matris.length - 1] = oyunSirasi;
-                buttons[matris.length - 1][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
-            } else if (matris[0][0] == OyunKey.BOS.getDeger()) {
-                matris[0][0] = oyunSirasi;
-                buttons[0][0].setText(getOyunSirasiText(oyunSirasi));
+            Random random = new Random();
+            int randomNumber = random.nextInt(5);
+            if (randomNumber == 0 && !eklendiMi) {
+                if (matris[0][matris.length - 1] == OyunKey.BOS.getDeger()) {
+                    matris[0][matris.length - 1] = oyunSirasi;
+                    buttons[0][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
+                    eklendiMi = true;
+                }
+            }
+            if (randomNumber == 1 && !eklendiMi) {
+                if (matris[matris.length - 1][0] == OyunKey.BOS.getDeger()) {
+                    matris[matris.length - 1][0] = oyunSirasi;
+                    buttons[matris.length - 1][0].setText(getOyunSirasiText(oyunSirasi));
+                    eklendiMi = true;
+                }
+            }
+            if (randomNumber == 2 && !eklendiMi) {
+                if (matris[matris.length - 1][matris.length - 1] == OyunKey.BOS.getDeger()) {
+                    matris[matris.length - 1][matris.length - 1] = oyunSirasi;
+                    buttons[matris.length - 1][matris.length - 1].setText(getOyunSirasiText(oyunSirasi));
+                    eklendiMi = true;
+                }
+            }
+            if (randomNumber == 3 && !eklendiMi) {
+                if (matris[0][0] == OyunKey.BOS.getDeger()) {
+                    matris[0][0] = oyunSirasi;
+                    buttons[0][0].setText(getOyunSirasiText(oyunSirasi));
+                    eklendiMi = true;
+                }
             } else {
                 for (int i = 0; i < matris.length; i++) {
                     for (int j = 0; j < matris.length; j++) {
@@ -197,25 +216,25 @@ public class YapayZeka {
                     if (((j + 2) < matris.length)) {
                         if ((matris[i][j] == matris[i][j + 1]) && (matris[i][j] == matris[i][j + 2])) {
                             xoxBulunduMu = true;
-                            btnDegerleriniSetle(i, j, i, j + 1, i, j + 2);
+                            oyunInterfaces.btnDegerleriniSetle(i, j, i, j + 1, i, j + 2);
                         }
                     }
                     if ((i + 2) < matris.length) {
                         if ((matris[i][j] == matris[i + 1][j]) && (matris[i + 1][j] == matris[i + 2][j])) {
                             xoxBulunduMu = true;
-                            btnDegerleriniSetle(i, j, i + 1, j, i + 2, j);
+                            oyunInterfaces.btnDegerleriniSetle(i, j, i + 1, j, i + 2, j);
                         }
                     }
                     if (((i + 2) < matris.length) && ((j + 2) < matris.length)) {
                         if ((matris[i][j] == matris[i + 1][j + 1]) && (matris[i + 1][j + 1] == matris[i + 2][j + 2])) {
                             xoxBulunduMu = true;
-                            btnDegerleriniSetle(i, j, i + 1, j + 1, i + 2, j + 2);
+                            oyunInterfaces.btnDegerleriniSetle(i, j, i + 1, j + 1, i + 2, j + 2);
                         }
                     }
                     if (((i - 2) >= 0) && ((j + 2) < matris.length)) {
                         if ((matris[i][j] == matris[i - 1][j + 1]) && (matris[i - 1][j + 1] == matris[i - 2][j + 2])) {
                             xoxBulunduMu = true;
-                            btnDegerleriniSetle(i, j, i - 1, j + 1, i - 2, j + 2);
+                            oyunInterfaces.btnDegerleriniSetle(i, j, i - 1, j + 1, i - 2, j + 2);
                         }
                     }
                 }
@@ -223,12 +242,5 @@ public class YapayZeka {
         }
     }
 
-    private void btnDegerleriniSetle(int i1, int j1, int i2, int j2, int i3, int j3) {
-        btnBirSatir = i1;
-        btnIkiSatir = i2;
-        btnUcSatir = i3;
-        btnBirSutun = j1;
-        btnIkiSutun = j2;
-        btnUcSutun = j3;
-    }
+
 }
