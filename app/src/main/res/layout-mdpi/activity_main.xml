@@ -26,7 +26,7 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="328dp"
+        android:layout_width="match_parent"
         android:layout_height="145dp"
         android:layout_marginTop="44dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
         android:layout_marginTop="60dp"
         android:background="@drawable/button"
         android:text="Play Game"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/button"
         android:text="QUIT"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonPlayGame" />

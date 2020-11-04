@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/skorText"
-        android:layout_width="407dp"
+        android:layout_width="0dp"
         android:layout_height="66dp"
         android:layout_weight="1"
         android:gravity="center"
@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/turnOf"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="57dp"
         android:layout_marginTop="4dp"
         android:gravity="center"
@@ -147,7 +147,7 @@
         android:layout_height="58dp"
         android:background="@drawable/button_red"
         android:text="@string/playAgain"
-        android:textColor="@android:color/white"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/btnResetGame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -159,8 +159,8 @@
         android:layout_width="260dp"
         android:layout_height="58dp"
         android:background="@drawable/button_red"
-        android:text="@string/playAgain"
-        android:textColor="@android:color/white"
+        android:text="@string/playReset"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
